@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/mikhatanu/dating-test/db"
 	rest_api "github.com/mikhatanu/dating-test/rest-api"
@@ -23,17 +24,17 @@ const (
 )
 
 func main() {
-	// // check for sqlite file. Creat if not exist
-	// _, err := os.Stat("./app.db")
-	// if err != nil {
-	// 	_, err2 := os.Create("./app.db")
-	// 	if err2 != nil {
-	// 		log.Fatal(err2.Error())
-	// 	}
-	// }
+	// check for sqlite file. Create if not exist
+	_, err := os.Stat("./db/app.db")
+	if err != nil {
+		_, err2 := os.Create("./db/app.db")
+		if err2 != nil {
+			log.Fatal(err2.Error())
+		}
+	}
 
 	// Open sql connection, save to global variable in db package
-	db.DB, db.DB_error = sql.Open("sqlite3", "./app.db")
+	db.DB, db.DB_error = sql.Open("sqlite3", "./db/app.db")
 	if db.DB_error != nil {
 		log.Fatal(db.DB_error)
 	}

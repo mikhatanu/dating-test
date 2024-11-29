@@ -1,5 +1,5 @@
 # Stage 1: Build environment
-FROM golang:1.22-alpine AS builder
+FROM golang:1.23.3-alpine AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git ca-certificates tzdata && \
@@ -13,6 +13,7 @@ WORKDIR /build
 
 # Copy go mod files first to leverage layer caching
 COPY go.mod go.sum ./
+
 
 # Download dependencies
 # Using go mod download instead of go get for better reproducibility
@@ -41,12 +42,15 @@ COPY --from=builder /etc/group /etc/group
 # Copy the binary
 COPY --from=builder /build/app /app
 
+
+
 # Copy any additional required files (like config files, static assets)
-# COPY --from=builder /build/config /config
+COPY --from=builder /build/db/app.db /db/
 # COPY --from=builder /build/static /static
 
 # Use non-root user
 USER gouser
+
 
 # Set environment variables
 ENV APP_ENV=production
